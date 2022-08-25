@@ -1,13 +1,13 @@
 {
-    "name": "vscode-plugin-demo",
+    "name": "vscode-youji",
     "displayName": "youji-bok",
-    "description": "VSCode插件demo",
+    "description": "youji插件bok",
     "keywords": [
         "vscode",
-        "plugin",
-        "demo"
+        "youji",
+        "bok"
     ],
-    "version": "1.0.3",
+    "version": "1.1.0",
     "publisher": "youji",
     "engines": {
         "vscode": "^1.34.0"
@@ -108,14 +108,5 @@
 		"tslint": "^5.12.1",
 		"typescript": "^3.3.1",
 		"vscode": "^1.1.34"
-    },
-    "license": "SEE LICENSE IN LICENSE.txt",
-    "bugs": {
-        "url": "https://github.com/sxei/vscode-plugin-demo/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/sxei/vscode-plugin-demo"
-    },
-    "homepage": "https://github.com/sxei/vscode-plugin-demo/blob/master/README.md"
+    }
 }

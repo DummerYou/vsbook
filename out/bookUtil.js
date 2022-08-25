@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Book = void 0;
 const vscode_1 = require("vscode");
 const fs = require("fs");
 class Book {

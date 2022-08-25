@@ -15,6 +15,7 @@ export function activate(context: ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
+	let ttOut: NodeJS.Timeout;
 	// 老板键
 	let displayCode = commands.registerCommand('extension.displayCode', () => {
 
@@ -22,6 +23,9 @@ export function activate(context: ExtensionContext) {
 			'',
 			'',
 		];
+		if(ttOut){
+			clearTimeout(ttOut)
+		}
 
 		var index = Math.floor((Math.random() * lauage_arr_list.length));
 		window.setStatusBarMessage(lauage_arr_list[index]);
@@ -29,12 +33,24 @@ export function activate(context: ExtensionContext) {
 
 	// 下一页
 	let getNextPage = commands.registerCommand('extension.getNextPage', () => {
+		if(ttOut){
+			clearTimeout(ttOut)
+		}
+		ttOut = setTimeout(() => {
+			window.setStatusBarMessage('.');
+		}, 5000);
 		let books = new book.Book(context);
 		window.setStatusBarMessage(books.getNextPage());
 	});
 
 	// 上一页
 	let getPreviousPage = commands.registerCommand('extension.getPreviousPage', () => {
+		if(ttOut){
+			clearTimeout(ttOut)
+		}
+		ttOut = setTimeout(() => {
+			window.setStatusBarMessage('.');
+		}, 5000);
 		let books = new book.Book(context);
 		window.setStatusBarMessage(books.getPreviousPage());
 	});
