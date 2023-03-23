@@ -15,37 +15,38 @@ function activate(context) {
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
     let ttOut;
+    let setTtOut = (state) => {
+        if (ttOut) {
+            clearTimeout(ttOut);
+        }
+        if (state) {
+            var delayTime = vscode_1.workspace.getConfiguration().get('youjiBok.delayTime');
+            if (delayTime) {
+                ttOut = setTimeout(() => {
+                    vscode_1.window.setStatusBarMessage('.');
+                }, delayTime);
+            }
+        }
+    };
     // 老板键
     let displayCode = vscode_1.commands.registerCommand('extension.displayCode', () => {
         let lauage_arr_list = [
             '',
             '',
         ];
-        if (ttOut) {
-            clearTimeout(ttOut);
-        }
+        setTtOut(false);
         var index = Math.floor((Math.random() * lauage_arr_list.length));
         vscode_1.window.setStatusBarMessage(lauage_arr_list[index]);
     });
     // 下一页
     let getNextPage = vscode_1.commands.registerCommand('extension.getNextPage', () => {
-        if (ttOut) {
-            clearTimeout(ttOut);
-        }
-        ttOut = setTimeout(() => {
-            vscode_1.window.setStatusBarMessage('.');
-        }, 5000);
+        setTtOut(true);
         let books = new book.Book(context);
         vscode_1.window.setStatusBarMessage(books.getNextPage());
     });
     // 上一页
     let getPreviousPage = vscode_1.commands.registerCommand('extension.getPreviousPage', () => {
-        if (ttOut) {
-            clearTimeout(ttOut);
-        }
-        ttOut = setTimeout(() => {
-            vscode_1.window.setStatusBarMessage('.');
-        }, 5000);
+        setTtOut(true);
         let books = new book.Book(context);
         vscode_1.window.setStatusBarMessage(books.getPreviousPage());
     });
@@ -54,14 +55,12 @@ function activate(context) {
         let books = new book.Book(context);
         vscode_1.window.setStatusBarMessage(books.getJumpingPage());
     });
+    // 禁用
     let disabled = vscode_1.commands.registerCommand('extension.disabled', () => {
-        // let books = new book.Book(context);
-        // window.setStatusBarMessage(books.getJumpingPage());
         vscode_1.workspace.getConfiguration().update('youjiBok.disabled', true, true);
     });
+    // 启用
     let noDisabled = vscode_1.commands.registerCommand('extension.noDisabled', () => {
-        // let books = new book.Book(context);
-        // window.setStatusBarMessage(books.getJumpingPage());
         vscode_1.workspace.getConfiguration().update('youjiBok.disabled', false, true);
     });
     context.subscriptions.push(displayCode);

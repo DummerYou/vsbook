@@ -16,6 +16,21 @@ export function activate(context: ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 
 	let ttOut: NodeJS.Timeout;
+
+	let setTtOut = (state:Boolean)=>{
+		if(ttOut){
+			clearTimeout(ttOut)
+		}
+		if(state){
+			var delayTime = <number>workspace.getConfiguration().get('youjiBok.delayTime');
+			if(delayTime){
+				ttOut = setTimeout(() => {
+					window.setStatusBarMessage('.');
+				}, delayTime);
+			}
+			
+		}
+	}
 	// 老板键
 	let displayCode = commands.registerCommand('extension.displayCode', () => {
 
@@ -23,9 +38,7 @@ export function activate(context: ExtensionContext) {
 			'',
 			'',
 		];
-		if(ttOut){
-			clearTimeout(ttOut)
-		}
+		setTtOut(false)
 
 		var index = Math.floor((Math.random() * lauage_arr_list.length));
 		window.setStatusBarMessage(lauage_arr_list[index]);
@@ -33,24 +46,14 @@ export function activate(context: ExtensionContext) {
 
 	// 下一页
 	let getNextPage = commands.registerCommand('extension.getNextPage', () => {
-		if(ttOut){
-			clearTimeout(ttOut)
-		}
-		ttOut = setTimeout(() => {
-			window.setStatusBarMessage('.');
-		}, 5000);
+		setTtOut(true)
 		let books = new book.Book(context);
 		window.setStatusBarMessage(books.getNextPage());
 	});
 
 	// 上一页
 	let getPreviousPage = commands.registerCommand('extension.getPreviousPage', () => {
-		if(ttOut){
-			clearTimeout(ttOut)
-		}
-		ttOut = setTimeout(() => {
-			window.setStatusBarMessage('.');
-		}, 5000);
+		setTtOut(true)
 		let books = new book.Book(context);
 		window.setStatusBarMessage(books.getPreviousPage());
 	});
@@ -60,14 +63,12 @@ export function activate(context: ExtensionContext) {
 		let books = new book.Book(context);
 		window.setStatusBarMessage(books.getJumpingPage());
 	});
+	// 禁用
 	let disabled = commands.registerCommand('extension.disabled', () => {
-		// let books = new book.Book(context);
-		// window.setStatusBarMessage(books.getJumpingPage());
 		workspace.getConfiguration().update('youjiBok.disabled', true, true);
 	});
+	// 启用
 	let noDisabled = commands.registerCommand('extension.noDisabled', () => {
-		// let books = new book.Book(context);
-		// window.setStatusBarMessage(books.getJumpingPage());
 		workspace.getConfiguration().update('youjiBok.disabled', false, true);
 	});
 

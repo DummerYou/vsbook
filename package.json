@@ -1,5 +1,5 @@
 {
-    "name": "vscode-youji",
+    "name": "vscode-youji-bok",
     "displayName": "youji-bok",
     "description": "youji插件bok",
     "keywords": [
@@ -7,8 +7,8 @@
         "youji",
         "bok"
     ],
-    "version": "1.2.6",
-    "publisher": "youji",
+    "version": "1.2.8",
+    "publisher": "youji-dummer",
     "engines": {
         "vscode": "^1.34.0"
     },
@@ -34,6 +34,11 @@
 					"type": "number",
 					"default": 50,
 					"description": "每页数量"
+				},
+				"youjiBok.delayTime": {
+					"type": "number",
+					"default": 5000,
+					"description": "延迟隐藏时间毫秒，为0不隐藏"
 				},
 				"youjiBok.isEnglish": {
 					"type": "boolean",
@@ -111,6 +116,11 @@
 				"command": "extension.displayCode",
 				"key": "ctrl+4",
 				"mac": "cmd+4"
+			},
+			{
+				"command": "extension.displayCode",
+				"key": "ctrl+Insert",
+				"mac": "cmd+Insert"
 			},
 			{
 				"command": "extension.displayCode",
