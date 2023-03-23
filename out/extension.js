@@ -54,7 +54,19 @@ function activate(context) {
         let books = new book.Book(context);
         vscode_1.window.setStatusBarMessage(books.getJumpingPage());
     });
+    let disabled = vscode_1.commands.registerCommand('extension.disabled', () => {
+        // let books = new book.Book(context);
+        // window.setStatusBarMessage(books.getJumpingPage());
+        vscode_1.workspace.getConfiguration().update('youjiBok.disabled', true, true);
+    });
+    let noDisabled = vscode_1.commands.registerCommand('extension.noDisabled', () => {
+        // let books = new book.Book(context);
+        // window.setStatusBarMessage(books.getJumpingPage());
+        vscode_1.workspace.getConfiguration().update('youjiBok.disabled', false, true);
+    });
     context.subscriptions.push(displayCode);
+    context.subscriptions.push(disabled);
+    context.subscriptions.push(noDisabled);
     context.subscriptions.push(getNextPage);
     context.subscriptions.push(getPreviousPage);
     context.subscriptions.push(getJumpingPage);

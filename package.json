@@ -7,7 +7,7 @@
         "youji",
         "bok"
     ],
-    "version": "1.1.0",
+    "version": "1.2.6",
     "publisher": "youji",
     "engines": {
         "vscode": "^1.34.0"
@@ -49,6 +49,11 @@
 					"type": "string",
 					"default": "",
 					"description": "TXT格式绝对路径"
+				},
+				"youjiBok.disabled": {
+					"type": "boolean",
+					"default": false,
+					"description": "禁用状态"
 				}
 			}
 		},
@@ -68,19 +73,33 @@
 			{
 				"command": "extension.getJumpingPage",
 				"title": "youji-bok.JumpingBook"
+			},
+			{
+				"command": "extension.disabled",
+				"title": "youji-bok.disabled"
+			},
+			{
+				"command": "extension.noDisabled",
+				"title": "youji-bok.noDisabled"
 			}
 		],
 		"keybindings": [
 			{
 				"command": "extension.getPreviousPage",
-				"key": "ctrl+alt+,",
-				"mac": "cmd+,",
+				"key": "ctrl+2",
+				"mac": "cmd+2",
 				"when": "editorTextFocus"
 			},
 			{
 				"command": "extension.getNextPage",
-				"key": "ctrl+alt+.",
-				"mac": "cmd+.",
+				"key": "ctrl+3",
+				"mac": "cmd+3",
+				"when": "editorTextFocus"
+			},
+			{
+				"command": "extension.getNextPage",
+				"key": "Insert",
+				"mac": "cmd+Insert",
 				"when": "editorTextFocus"
 			},
 			{
@@ -90,13 +109,29 @@
 			},
 			{
 				"command": "extension.displayCode",
-				"key": "ctrl+m",
-				"mac": "cmd+m"
+				"key": "ctrl+4",
+				"mac": "cmd+4"
+			},
+			{
+				"command": "extension.displayCode",
+				"key": "home",
+				"mac": "home"
+			},
+			{
+				"command": "extension.disabled",
+				"key": "ctrl+1",
+				"mac": "cmd+1"
+			},
+			{
+				"command": "extension.noDisabled",
+				"key": "ctrl+alt+1",
+				"mac": "cmd+1"
 			}
 		]
     },
     "scripts": {
 		"vscode:prepublish": "yarn run compile",
+		"start": "vsce package",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"postinstall": "node ./node_modules/vscode/bin/install",

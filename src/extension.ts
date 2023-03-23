@@ -1,6 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { commands, ExtensionContext, window } from 'vscode';
+import { commands, ExtensionContext, window ,workspace} from 'vscode';
 import * as book from './bookUtil';
 
 // this method is called when your extension is activated
@@ -60,8 +60,20 @@ export function activate(context: ExtensionContext) {
 		let books = new book.Book(context);
 		window.setStatusBarMessage(books.getJumpingPage());
 	});
+	let disabled = commands.registerCommand('extension.disabled', () => {
+		// let books = new book.Book(context);
+		// window.setStatusBarMessage(books.getJumpingPage());
+		workspace.getConfiguration().update('youjiBok.disabled', true, true);
+	});
+	let noDisabled = commands.registerCommand('extension.noDisabled', () => {
+		// let books = new book.Book(context);
+		// window.setStatusBarMessage(books.getJumpingPage());
+		workspace.getConfiguration().update('youjiBok.disabled', false, true);
+	});
 
 	context.subscriptions.push(displayCode);
+	context.subscriptions.push(disabled);
+	context.subscriptions.push(noDisabled);
 	context.subscriptions.push(getNextPage);
 	context.subscriptions.push(getPreviousPage);
 	context.subscriptions.push(getJumpingPage);

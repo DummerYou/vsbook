@@ -90,7 +90,7 @@ export class Book {
     init() {
         this.filePath = workspace.getConfiguration().get('youjiBok.filePath');
         var is_english = <boolean>workspace.getConfiguration().get('youjiBok.isEnglish');
-
+        
         if (is_english === true) {
             this.page_size = <number>workspace.getConfiguration().get('youjiBok.pageSize') * 2;
         } else {
@@ -99,6 +99,10 @@ export class Book {
     }
 
     getPreviousPage() {
+        var is_disabled = <boolean>workspace.getConfiguration().get('youjiBok.disabled');
+        if(is_disabled){
+            return ''
+        }
         this.init();
 
         let text = this.readFile();
@@ -114,6 +118,10 @@ export class Book {
     }
 
     getNextPage() {
+        var is_disabled = <boolean>workspace.getConfiguration().get('youjiBok.disabled');
+        if(is_disabled){
+            return ''
+        }
         this.init();
 
         let text = this.readFile();
@@ -130,6 +138,10 @@ export class Book {
     }
 
     getJumpingPage() {
+        var is_disabled = <boolean>workspace.getConfiguration().get('youjiBok.disabled');
+        if(is_disabled){
+            return ''
+        }
         this.init();
 
         let text = this.readFile();

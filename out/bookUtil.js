@@ -87,6 +87,10 @@ class Book {
         }
     }
     getPreviousPage() {
+        var is_disabled = vscode_1.workspace.getConfiguration().get('youjiBok.disabled');
+        if (is_disabled) {
+            return '';
+        }
         this.init();
         let text = this.readFile();
         this.getSize(text);
@@ -97,6 +101,10 @@ class Book {
         return text.substring(this.start, this.end) + "    " + page_info;
     }
     getNextPage() {
+        var is_disabled = vscode_1.workspace.getConfiguration().get('youjiBok.disabled');
+        if (is_disabled) {
+            return '';
+        }
         this.init();
         let text = this.readFile();
         this.getSize(text);
@@ -107,6 +115,10 @@ class Book {
         return text.substring(this.start, this.end) + "    " + page_info;
     }
     getJumpingPage() {
+        var is_disabled = vscode_1.workspace.getConfiguration().get('youjiBok.disabled');
+        if (is_disabled) {
+            return '';
+        }
         this.init();
         let text = this.readFile();
         this.getSize(text);
