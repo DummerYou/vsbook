@@ -17,15 +17,25 @@ export function activate(context: ExtensionContext) {
 
 	let ttOut: NodeJS.Timeout;
 
+
+	let showTxt = (txt:string)=>{
+		const exhibit = <string>workspace.getConfiguration().get('youjiBok.exhibit');
+		if(exhibit === 'bar'){
+			window.setStatusBarMessage(txt)
+		}else if(exhibit === 'box'){
+			window.showInformationMessage(txt);
+		}
+	}
+
 	let setTtOut = (state:Boolean)=>{
 		if(ttOut){
 			clearTimeout(ttOut)
 		}
 		if(state){
-			var delayTime = <number>workspace.getConfiguration().get('youjiBok.delayTime');
-			if(delayTime){
+			const delayTime = <number>workspace.getConfiguration().get('youjiBok.delayTime');
+			if(!delayTime){
 				ttOut = setTimeout(() => {
-					window.setStatusBarMessage('.');
+					showTxt('.');
 				}, delayTime);
 			}
 			
@@ -41,27 +51,27 @@ export function activate(context: ExtensionContext) {
 		setTtOut(false)
 
 		var index = Math.floor((Math.random() * lauage_arr_list.length));
-		window.setStatusBarMessage(lauage_arr_list[index]);
+		showTxt(lauage_arr_list[index]);
 	});
 
 	// 下一页
 	let getNextPage = commands.registerCommand('extension.getNextPage', () => {
 		setTtOut(true)
 		let books = new book.Book(context);
-		window.setStatusBarMessage(books.getNextPage());
+		showTxt(books.getNextPage());
 	});
 
 	// 上一页
 	let getPreviousPage = commands.registerCommand('extension.getPreviousPage', () => {
 		setTtOut(true)
 		let books = new book.Book(context);
-		window.setStatusBarMessage(books.getPreviousPage());
+		showTxt(books.getPreviousPage());
 	});
 
 	// 跳转某个页面
 	let getJumpingPage = commands.registerCommand('extension.getJumpingPage', () => {
 		let books = new book.Book(context);
-		window.setStatusBarMessage(books.getJumpingPage());
+		showTxt(books.getJumpingPage());
 	});
 	// 禁用
 	let disabled = commands.registerCommand('extension.disabled', () => {

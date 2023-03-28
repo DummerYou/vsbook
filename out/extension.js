@@ -15,15 +15,24 @@ function activate(context) {
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
     let ttOut;
+    let showTxt = (txt) => {
+        const exhibit = vscode_1.workspace.getConfiguration().get('youjiBok.exhibit');
+        if (exhibit === 'bar') {
+            vscode_1.window.setStatusBarMessage(txt);
+        }
+        else if (exhibit === 'box') {
+            vscode_1.window.showInformationMessage(txt);
+        }
+    };
     let setTtOut = (state) => {
         if (ttOut) {
             clearTimeout(ttOut);
         }
         if (state) {
-            var delayTime = vscode_1.workspace.getConfiguration().get('youjiBok.delayTime');
-            if (delayTime) {
+            const delayTime = vscode_1.workspace.getConfiguration().get('youjiBok.delayTime');
+            if (!delayTime) {
                 ttOut = setTimeout(() => {
-                    vscode_1.window.setStatusBarMessage('.');
+                    showTxt('.');
                 }, delayTime);
             }
         }
@@ -36,24 +45,24 @@ function activate(context) {
         ];
         setTtOut(false);
         var index = Math.floor((Math.random() * lauage_arr_list.length));
-        vscode_1.window.setStatusBarMessage(lauage_arr_list[index]);
+        showTxt(lauage_arr_list[index]);
     });
     // 下一页
     let getNextPage = vscode_1.commands.registerCommand('extension.getNextPage', () => {
         setTtOut(true);
         let books = new book.Book(context);
-        vscode_1.window.setStatusBarMessage(books.getNextPage());
+        showTxt(books.getNextPage());
     });
     // 上一页
     let getPreviousPage = vscode_1.commands.registerCommand('extension.getPreviousPage', () => {
         setTtOut(true);
         let books = new book.Book(context);
-        vscode_1.window.setStatusBarMessage(books.getPreviousPage());
+        showTxt(books.getPreviousPage());
     });
     // 跳转某个页面
     let getJumpingPage = vscode_1.commands.registerCommand('extension.getJumpingPage', () => {
         let books = new book.Book(context);
-        vscode_1.window.setStatusBarMessage(books.getJumpingPage());
+        showTxt(books.getJumpingPage());
     });
     // 禁用
     let disabled = vscode_1.commands.registerCommand('extension.disabled', () => {
