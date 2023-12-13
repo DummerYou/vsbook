@@ -11,6 +11,7 @@ class Book {
         this.start = 0;
         this.end = this.page_size;
         this.filePath = "";
+        this.filePathName = "";
         this.extensionContext = extensionContext;
     }
     getSize(text) {

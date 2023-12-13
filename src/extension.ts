@@ -16,6 +16,7 @@ export function activate(context: ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 
 	let ttOut: NodeJS.Timeout;
+    let ttOutAuto: NodeJS.Timeout;
 
 
 	let showTxt = (txt:string)=>{
@@ -31,9 +32,12 @@ export function activate(context: ExtensionContext) {
 		if(ttOut){
 			clearTimeout(ttOut)
 		}
+        if (ttOutAuto) {
+            clearInterval(ttOutAuto);
+        }
 		if(state){
 			const delayTime = <number>workspace.getConfiguration().get('youjiBok.delayTime');
-			if(!delayTime){
+			if(delayTime){
 				ttOut = setTimeout(() => {
 					showTxt('.');
 				}, delayTime);
@@ -61,6 +65,16 @@ export function activate(context: ExtensionContext) {
 		showTxt(books.getNextPage());
 	});
 
+    // 自动翻页
+    let nextPageAuto = commands.registerCommand('extension.nextPageAuto', () => {
+        setTtOut(false)
+		let books = new book.Book(context);
+		const autoTime = <number>workspace.getConfiguration().get('youjiBok.autoTime');
+		ttOutAuto = setInterval(() => {
+			showTxt(books.getNextPage());
+		}, autoTime || 3000);
+    });
+
 	// 上一页
 	let getPreviousPage = commands.registerCommand('extension.getPreviousPage', () => {
 		setTtOut(true)
@@ -86,6 +100,8 @@ export function activate(context: ExtensionContext) {
 	context.subscriptions.push(disabled);
 	context.subscriptions.push(noDisabled);
 	context.subscriptions.push(getNextPage);
+	context.subscriptions.push(nextPageAuto);
+	
 	context.subscriptions.push(getPreviousPage);
 	context.subscriptions.push(getJumpingPage);
 }

@@ -15,6 +15,7 @@ function activate(context) {
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
     let ttOut;
+    let ttOutAuto;
     let showTxt = (txt) => {
         const exhibit = vscode_1.workspace.getConfiguration().get('youjiBok.exhibit');
         if (exhibit === 'bar') {
@@ -28,9 +29,12 @@ function activate(context) {
         if (ttOut) {
             clearTimeout(ttOut);
         }
+        if (ttOutAuto) {
+            clearInterval(ttOutAuto);
+        }
         if (state) {
             const delayTime = vscode_1.workspace.getConfiguration().get('youjiBok.delayTime');
-            if (!delayTime) {
+            if (delayTime) {
                 ttOut = setTimeout(() => {
                     showTxt('.');
                 }, delayTime);
@@ -52,6 +56,15 @@ function activate(context) {
         setTtOut(true);
         let books = new book.Book(context);
         showTxt(books.getNextPage());
+    });
+    // 自动翻页
+    let nextPageAuto = vscode_1.commands.registerCommand('extension.nextPageAuto', () => {
+        setTtOut(false);
+        let books = new book.Book(context);
+        const autoTime = vscode_1.workspace.getConfiguration().get('youjiBok.autoTime');
+        ttOutAuto = setInterval(() => {
+            showTxt(books.getNextPage());
+        }, autoTime || 3000);
     });
     // 上一页
     let getPreviousPage = vscode_1.commands.registerCommand('extension.getPreviousPage', () => {
@@ -76,6 +89,7 @@ function activate(context) {
     context.subscriptions.push(disabled);
     context.subscriptions.push(noDisabled);
     context.subscriptions.push(getNextPage);
+    context.subscriptions.push(nextPageAuto);
     context.subscriptions.push(getPreviousPage);
     context.subscriptions.push(getJumpingPage);
 }

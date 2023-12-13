@@ -8,6 +8,7 @@ export class Book {
     start = 0;
     end = this.page_size;
     filePath: string | undefined = "";
+    filePathName: string | undefined = "";
     extensionContext: ExtensionContext;
 
     constructor(extensionContext: ExtensionContext) {
