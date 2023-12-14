@@ -18,6 +18,16 @@ export function activate(context: ExtensionContext) {
 	let ttOut: NodeJS.Timeout;
     let ttOutAuto: NodeJS.Timeout;
 
+	
+	window.onDidChangeWindowState((e) => {
+		if (e.focused === false) {
+			console.log('鼠标失去焦点');
+			let books = new book.Book(context);
+			books.getPreviousPage()
+			setTtOut(false)
+			showTxt("")
+		}
+	});
 
 	let showTxt = (txt:string)=>{
 		const exhibit = <string>workspace.getConfiguration().get('youjiBok.exhibit');
