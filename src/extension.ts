@@ -17,19 +17,29 @@ export function activate(context: ExtensionContext) {
 
 	let ttOut: NodeJS.Timeout;
     let ttOutAuto: NodeJS.Timeout;
-
+	let txtData:string = "";
 	
 	window.onDidChangeWindowState((e) => {
 		if (e.focused === false) {
-			console.log('鼠标失去焦点');
-			let books = new book.Book(context);
-			books.getPreviousPage()
-			setTtOut(false)
-			showTxt("")
+			if(!(!txtData || txtData === '.' || txtData === '')){
+				let books = new book.Book(context);
+				books.getPreviousPage()
+				setTtOut(false)
+				showTxt("")
+			}
 		}
 	});
 
 	let showTxt = (txt:string)=>{
+		const exhibit = <string>workspace.getConfiguration().get('youjiBok.exhibit');
+		txtData = txt;
+		if(exhibit === 'bar'){
+			window.setStatusBarMessage(txt)
+		}else if(exhibit === 'box'){
+			window.showInformationMessage(txt);
+		}
+	}
+	let getTxt = (txt:string)=>{
 		const exhibit = <string>workspace.getConfiguration().get('youjiBok.exhibit');
 		if(exhibit === 'bar'){
 			window.setStatusBarMessage(txt)

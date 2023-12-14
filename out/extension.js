@@ -16,16 +16,28 @@ function activate(context) {
     // The commandId parameter must match the command field in package.json
     let ttOut;
     let ttOutAuto;
+    let txtData = "";
     vscode_1.window.onDidChangeWindowState((e) => {
         if (e.focused === false) {
-            console.log('鼠标失去焦点');
-            let books = new book.Book(context);
-            books.getPreviousPage();
-            setTtOut(false);
-            showTxt("");
+            if (!(!txtData || txtData === '.' || txtData === '')) {
+                let books = new book.Book(context);
+                books.getPreviousPage();
+                setTtOut(false);
+                showTxt("");
+            }
         }
     });
     let showTxt = (txt) => {
+        const exhibit = vscode_1.workspace.getConfiguration().get('youjiBok.exhibit');
+        txtData = txt;
+        if (exhibit === 'bar') {
+            vscode_1.window.setStatusBarMessage(txt);
+        }
+        else if (exhibit === 'box') {
+            vscode_1.window.showInformationMessage(txt);
+        }
+    };
+    let getTxt = (txt) => {
         const exhibit = vscode_1.workspace.getConfiguration().get('youjiBok.exhibit');
         if (exhibit === 'bar') {
             vscode_1.window.setStatusBarMessage(txt);
