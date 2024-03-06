@@ -179,7 +179,8 @@ class Book {
             }
             let size = this.page_size || 20;
             let items = indices.map((index) => ({
-                label: `位置: ${index}，内容：${text.substring(index, index + size)}`,
+                label: `页数: ${Math.ceil(index / size)}，位置: ${index}`,
+                description: `内容：${text.substring(index, index + size)}`,
                 index: index
             }));
             let selected = yield vscode_1.window.showQuickPick(items, { placeHolder: '选择一个位置进行跳转' });
