@@ -103,9 +103,10 @@ export function activate(context: ExtensionContext) {
 	});
 
 	// 跳转某个页面
-	let getJumpingPage = commands.registerCommand('extension.getJumpingPage', () => {
+	let getJumpingPage = commands.registerCommand('bok-jumpPage', () => {
+		setTtOut(false)
 		let books = new book.Book(context);
-		showTxt(books.getJumpingPage());
+		books.getJumpingPage();
 	});
 	// 禁用
 	let disabled = commands.registerCommand('extension.disabled', () => {
@@ -115,6 +116,13 @@ export function activate(context: ExtensionContext) {
 	let noDisabled = commands.registerCommand('extension.noDisabled', () => {
 		workspace.getConfiguration().update('youjiBok.disabled', false, true);
 	});
+	// 搜索跳转
+	let bokJump = commands.registerCommand('bok-jump',async function () {
+		setTtOut(false)
+		let books = new book.Book(context);
+		books.searchJump();
+	});
+
 
 	context.subscriptions.push(displayCode);
 	context.subscriptions.push(disabled);
@@ -124,6 +132,7 @@ export function activate(context: ExtensionContext) {
 	
 	context.subscriptions.push(getPreviousPage);
 	context.subscriptions.push(getJumpingPage);
+	context.subscriptions.push(bokJump);
 }
 
 // this method is called when your extension is deactivated

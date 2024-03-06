@@ -1,5 +1,10 @@
-import { ExtensionContext, workspace, window } from 'vscode';
+import { ExtensionContext, workspace, window,QuickPickItem } from 'vscode';
 import * as fs from "fs";
+
+interface CustomQuickPickItem extends QuickPickItem {
+    index: number;
+    label: string;
+}
 
 export class Book {
     curr_page_number: number = 1;
@@ -137,24 +142,96 @@ export class Book {
 
         return text.substring(this.start, this.end) + "    " + page_info;
     }
+    setTxtShow(){
+        // 初始化
+        this.init();
 
-    getJumpingPage() {
+        // 读取文件内容
+        let text = this.readFile();
+
+        // 获取文本大小
+        this.getSize(text);
+
+        // 获取起始和结束位置
+        this.getStartEnd();
+
+        // 构造页面信息字符串
+        var page_info = this.curr_page_number.toString() + "/" + this.page.toString();
+
+        // 更新页面
+        this.updatePage();
+
+        // 设置状态栏消息，显示当前页面的文本内容以及页面信息
+        window.setStatusBarMessage(text.substring(this.start, this.end) + "    " + page_info)
+    }
+
+    async getJumpingPage() {
         var is_disabled = <boolean>workspace.getConfiguration().get('youjiBok.disabled');
         if(is_disabled){
             return ''
         }
+        
+        let txt = await window.showInputBox({
+            ignoreFocusOut: true,
+            prompt: '请输入页数：',
+            validateInput: (value) => {
+                const num = parseInt(value, 10);
+                if (isNaN(num) || num < 1) {
+                    return '请输入一个大于0的数字！';
+                }
+                return null; // 如果输入有效，返回null表示验证通过
+            }
+        });
+    
+        if (!txt || isNaN(Number(txt))) {
+            return; // 如果输入为空或不是数字，则直接返回
+        }
+    
+        this.curr_page_number = Number(txt);
+        this.setTxtShow();
+    }
+
+    async searchJump() {
+        let txt = await window.showInputBox({ ignoreFocusOut: true, prompt: '请搜索文本：' });
+        if (!txt) {
+            return;
+        }
         this.init();
 
         let text = this.readFile();
+        let indices = this.findAllOccurrences(text, txt);
+        if (indices.length === 0) {
+            window.showInformationMessage('未找到指定文本！');
+            return;
+        }
+        let size = this.page_size || 20;
 
-        this.getSize(text);
-        this.getPage("curr");
-        this.getStartEnd();
+        let items: CustomQuickPickItem[] = indices.map((index) => ({
+            label: `位置: ${index}，内容：${text.substring(index, index + size)}`,
+            index: index
+        }));
 
-        var page_info = this.curr_page_number.toString() + "/" + this.page.toString();
+        let selected = await window.showQuickPick(items, { placeHolder: '选择一个位置进行跳转' });
 
-        this.updatePage();
-
-        return text.substring(this.start, this.end) + "    " + page_info;
+        if (selected) {
+            this.curr_page_number = Math.ceil(selected.index  / size);
+            this.setTxtShow();
+        }
     }
+
+    findAllOccurrences(text: string, searchString: string, maxResults: number = 20): number[] {
+        let indices: number[] = [];
+        let index = text.indexOf(searchString);
+        let count = 0;
+    
+        while (index !== -1 && count < maxResults) {
+            indices.push(index);
+            index = text.indexOf(searchString, index + 1);
+            count++;
+        }
+    
+        return indices;
+    }
+
+    
 }

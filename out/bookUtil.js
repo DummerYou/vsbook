@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Book = void 0;
 const vscode_1 = require("vscode");
@@ -115,19 +124,81 @@ class Book {
         this.updatePage();
         return text.substring(this.start, this.end) + "    " + page_info;
     }
-    getJumpingPage() {
-        var is_disabled = vscode_1.workspace.getConfiguration().get('youjiBok.disabled');
-        if (is_disabled) {
-            return '';
-        }
+    setTxtShow() {
+        // 初始化
         this.init();
+        // 读取文件内容
         let text = this.readFile();
+        // 获取文本大小
         this.getSize(text);
-        this.getPage("curr");
+        // 获取起始和结束位置
         this.getStartEnd();
+        // 构造页面信息字符串
         var page_info = this.curr_page_number.toString() + "/" + this.page.toString();
+        // 更新页面
         this.updatePage();
-        return text.substring(this.start, this.end) + "    " + page_info;
+        // 设置状态栏消息，显示当前页面的文本内容以及页面信息
+        vscode_1.window.setStatusBarMessage(text.substring(this.start, this.end) + "    " + page_info);
+    }
+    getJumpingPage() {
+        return __awaiter(this, void 0, void 0, function* () {
+            var is_disabled = vscode_1.workspace.getConfiguration().get('youjiBok.disabled');
+            if (is_disabled) {
+                return '';
+            }
+            let txt = yield vscode_1.window.showInputBox({
+                ignoreFocusOut: true,
+                prompt: '请输入页数：',
+                validateInput: (value) => {
+                    const num = parseInt(value, 10);
+                    if (isNaN(num) || num < 1) {
+                        return '请输入一个大于0的数字！';
+                    }
+                    return null; // 如果输入有效，返回null表示验证通过
+                }
+            });
+            if (!txt || isNaN(Number(txt))) {
+                return; // 如果输入为空或不是数字，则直接返回
+            }
+            this.curr_page_number = Number(txt);
+            this.setTxtShow();
+        });
+    }
+    searchJump() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let txt = yield vscode_1.window.showInputBox({ ignoreFocusOut: true, prompt: '请搜索文本：' });
+            if (!txt) {
+                return;
+            }
+            this.init();
+            let text = this.readFile();
+            let indices = this.findAllOccurrences(text, txt);
+            if (indices.length === 0) {
+                vscode_1.window.showInformationMessage('未找到指定文本！');
+                return;
+            }
+            let size = this.page_size || 20;
+            let items = indices.map((index) => ({
+                label: `位置: ${index}，内容：${text.substring(index, index + size)}`,
+                index: index
+            }));
+            let selected = yield vscode_1.window.showQuickPick(items, { placeHolder: '选择一个位置进行跳转' });
+            if (selected) {
+                this.curr_page_number = Math.ceil(selected.index / size);
+                this.setTxtShow();
+            }
+        });
+    }
+    findAllOccurrences(text, searchString, maxResults = 20) {
+        let indices = [];
+        let index = text.indexOf(searchString);
+        let count = 0;
+        while (index !== -1 && count < maxResults) {
+            indices.push(index);
+            index = text.indexOf(searchString, index + 1);
+            count++;
+        }
+        return indices;
     }
 }
 exports.Book = Book;

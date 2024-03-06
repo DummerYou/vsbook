@@ -7,7 +7,7 @@
         "youji",
         "bok"
     ],
-    "version": "1.3.6",
+    "version": "1.3.7",
     "publisher": "youji-bok",
     "engines": {
         "vscode": "^1.34.0"
@@ -82,6 +82,10 @@
 		},
 		"commands": [
 			{
+				"command": "bok-jump",
+				"title": "bok跳转文本"
+			},
+			{
 				"command": "extension.displayCode",
 				"title": "youji-bok.DisplayCode"
 			},
@@ -98,8 +102,8 @@
 				"title": "youji-bok.NextPageAuto"
 			},
 			{
-				"command": "extension.getJumpingPage",
-				"title": "youji-bok.JumpingBook"
+				"command": "bok-jumpPage",
+				"title": "bok跳转页数"
 			},
 			{
 				"command": "extension.disabled",
