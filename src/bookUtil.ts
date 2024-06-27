@@ -61,10 +61,12 @@ export class Book {
     updatePage() {
         curr_page_numberNew = this.curr_page_number;
         clearTimeout(ttOutAuto);
+		const delayTime = <number>workspace.getConfiguration().get('youjiBok.delayTime');
+			
         ttOutAuto = setTimeout(() => {
             curr_page_numberNew = 0;
             workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
-        }, 1000*10);
+        }, delayTime*2);
     }
 
     getStartEnd() {
