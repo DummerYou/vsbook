@@ -12,15 +12,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Book = void 0;
 const vscode_1 = require("vscode");
 const fs = require("fs");
+let curr_page_numberNew = 0;
+let ttOutAuto;
 class Book {
     constructor(extensionContext) {
         this.curr_page_number = 1;
+        this.curr_page_numberNew = 0;
         this.page_size = 50;
         this.page = 0;
         this.start = 0;
         this.end = this.page_size;
         this.filePath = "";
         this.filePathName = "";
+        this.ttOutAuto = setTimeout(() => { }, 100);
         this.extensionContext = extensionContext;
     }
     getSize(text) {
@@ -32,7 +36,7 @@ class Book {
         console.log(file_name);
     }
     getPage(type) {
-        var curr_page = vscode_1.workspace.getConfiguration().get('youjiBok.currPageNumber');
+        var curr_page = curr_page_numberNew || vscode_1.workspace.getConfiguration().get('youjiBok.currPageNumber');
         var page = 0;
         if (type === "previous") {
             if (curr_page <= 1) {
@@ -57,22 +61,12 @@ class Book {
         // this.curr_page_number = this.extensionContext.globalState.get("book_page_number", 1);
     }
     updatePage() {
-        // var page = 0;
-        // if (type === "previous") {
-        //     if (this.curr_page_number! <= 1) {
-        //         page = 1;
-        //     } else {
-        //         page = this.curr_page_number! - 1;
-        //     }
-        // } else if (type === "next") {
-        //     if (this.curr_page_number! >= this.page) {
-        //         page = this.page;
-        //     } else {
-        //         page = this.curr_page_number! + 1;
-        //     }
-        // }
-        vscode_1.workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
-        // this.extensionContext.globalState.update("book_page_number", page);
+        curr_page_numberNew = this.curr_page_number;
+        clearTimeout(ttOutAuto);
+        ttOutAuto = setTimeout(() => {
+            curr_page_numberNew = 0;
+            vscode_1.workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
+        }, 1000 * 10);
     }
     getStartEnd() {
         this.start = this.curr_page_number * this.page_size;

@@ -1,6 +1,7 @@
 import { ExtensionContext, workspace, window,QuickPickItem } from 'vscode';
 import * as fs from "fs";
-
+let curr_page_numberNew = 0;
+let ttOutAuto: NodeJS.Timeout;
 interface CustomQuickPickItem extends QuickPickItem {
     index: number;
     label: string;
@@ -9,6 +10,7 @@ interface CustomQuickPickItem extends QuickPickItem {
 
 export class Book {
     curr_page_number: number = 1;
+    curr_page_numberNew: number = 0;
     page_size: number | undefined = 50;
     page = 0;
     start = 0;
@@ -16,6 +18,7 @@ export class Book {
     filePath: string | undefined = "";
     filePathName: string | undefined = "";
     extensionContext: ExtensionContext;
+    ttOutAuto: NodeJS.Timeout = setTimeout(() => { }, 100);
 
     constructor(extensionContext: ExtensionContext) {
         this.extensionContext = extensionContext;
@@ -32,8 +35,7 @@ export class Book {
     }
 
     getPage(type: string) {
-
-        var curr_page = <number>workspace.getConfiguration().get('youjiBok.currPageNumber');
+        var curr_page = curr_page_numberNew || <number>workspace.getConfiguration().get('youjiBok.currPageNumber');
         var page = 0;
 
         if (type === "previous") {
@@ -57,24 +59,12 @@ export class Book {
     }
 
     updatePage() {
-        // var page = 0;
-
-        // if (type === "previous") {
-        //     if (this.curr_page_number! <= 1) {
-        //         page = 1;
-        //     } else {
-        //         page = this.curr_page_number! - 1;
-        //     }
-        // } else if (type === "next") {
-        //     if (this.curr_page_number! >= this.page) {
-        //         page = this.page;
-        //     } else {
-        //         page = this.curr_page_number! + 1;
-        //     }
-        // }
-
-        workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
-        // this.extensionContext.globalState.update("book_page_number", page);
+        curr_page_numberNew = this.curr_page_number;
+        clearTimeout(ttOutAuto);
+        ttOutAuto = setTimeout(() => {
+            curr_page_numberNew = 0;
+            workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
+        }, 1000*10);
     }
 
     getStartEnd() {
