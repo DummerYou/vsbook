@@ -66,7 +66,7 @@ export class Book {
         ttOutAuto = setTimeout(() => {
             curr_page_numberNew = 0;
             workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
-        }, delayTime*2);
+        }, delayTime*3);
     }
 
     getStartEnd() {

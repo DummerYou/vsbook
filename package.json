@@ -7,7 +7,7 @@
         "youji",
         "bok"
     ],
-    "version": "1.3.9",
+    "version": "1.4.0",
     "publisher": "youji-bok",
     "engines": {
         "vscode": "^1.34.0"

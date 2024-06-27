@@ -63,10 +63,11 @@ class Book {
     updatePage() {
         curr_page_numberNew = this.curr_page_number;
         clearTimeout(ttOutAuto);
+        const delayTime = vscode_1.workspace.getConfiguration().get('youjiBok.delayTime');
         ttOutAuto = setTimeout(() => {
             curr_page_numberNew = 0;
             vscode_1.workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
-        }, 1000 * 10);
+        }, delayTime * 3);
     }
     getStartEnd() {
         this.start = this.curr_page_number * this.page_size;
