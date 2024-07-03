@@ -1,6 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { commands, ExtensionContext, window ,workspace} from 'vscode';
+import { commands, ExtensionContext, window ,workspace ,Range ,TextEditorDecorationType} from 'vscode';
 import * as book from './bookUtil';
 
 // this method is called when your extension is activated
@@ -18,6 +18,7 @@ export function activate(context: ExtensionContext) {
 	let ttOut: NodeJS.Timeout;
     let ttOutAuto: NodeJS.Timeout;
 	let txtData:string = "";
+	let decorationType: TextEditorDecorationType;
 	
 	window.onDidChangeWindowState((e) => {
 		if (e.focused === false) {
@@ -37,6 +38,29 @@ export function activate(context: ExtensionContext) {
 			window.setStatusBarMessage(txt)
 		}else if(exhibit === 'box'){
 			window.showInformationMessage(txt);
+		}else if(exhibit === 'init'){
+			if(decorationType && decorationType.dispose){
+				decorationType.dispose();
+			}
+			if(!txt || txt === '.' || txt === ''){
+				return;
+			}
+
+			const editor = window.activeTextEditor;
+			if (!editor) {
+				return;
+			}
+	
+			const position = editor.selection.active;
+			decorationType = window.createTextEditorDecorationType({
+				after: {
+					contentText: txt,
+					color: 'rgba(255,255,255,0.15)'
+				}
+			});
+	
+			editor.setDecorations(decorationType, [{ range: new Range(position, position) }]);
+	
 		}
 	}
 	let getTxt = (txt:string)=>{

@@ -26,6 +26,7 @@ function activate(context) {
     let ttOut;
     let ttOutAuto;
     let txtData = "";
+    let decorationType;
     vscode_1.window.onDidChangeWindowState((e) => {
         if (e.focused === false) {
             if (!(!txtData || txtData === '.' || txtData === '')) {
@@ -44,6 +45,26 @@ function activate(context) {
         }
         else if (exhibit === 'box') {
             vscode_1.window.showInformationMessage(txt);
+        }
+        else if (exhibit === 'init') {
+            if (decorationType && decorationType.dispose) {
+                decorationType.dispose();
+            }
+            if (!txt || txt === '.' || txt === '') {
+                return;
+            }
+            const editor = vscode_1.window.activeTextEditor;
+            if (!editor) {
+                return;
+            }
+            const position = editor.selection.active;
+            decorationType = vscode_1.window.createTextEditorDecorationType({
+                after: {
+                    contentText: txt,
+                    color: 'rgba(255,255,255,0.15)'
+                }
+            });
+            editor.setDecorations(decorationType, [{ range: new vscode_1.Range(position, position) }]);
         }
     };
     let getTxt = (txt) => {

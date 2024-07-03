@@ -7,7 +7,7 @@
         "youji",
         "bok"
     ],
-    "version": "1.4.0",
+    "version": "1.4.1",
     "publisher": "youji-bok",
     "engines": {
         "vscode": "^1.34.0"
@@ -69,11 +69,13 @@
 					"type": "string",
 					"enum": [
 					  "bar",
-					  "box"
+					  "box",
+					  "init"
 					],
 					"enumDescriptions": [
 					  "状态栏",
-					  "弹框"
+					  "弹框",
+					  "行内"
 					],
 					"default": "bar",
 					"description": "展示"
