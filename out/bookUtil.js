@@ -132,8 +132,11 @@ class Book {
         var page_info = this.curr_page_number.toString() + "/" + this.page.toString();
         // 更新页面
         this.updatePage();
+        const exhibit = vscode_1.workspace.getConfiguration().get('youjiBok.exhibit');
+        if (exhibit === 'bar') {
+            vscode_1.window.setStatusBarMessage(text.substring(this.start, this.end) + "    " + page_info);
+        }
         // 设置状态栏消息，显示当前页面的文本内容以及页面信息
-        vscode_1.window.setStatusBarMessage(text.substring(this.start, this.end) + "    " + page_info);
     }
     getJumpingPage() {
         return __awaiter(this, void 0, void 0, function* () {

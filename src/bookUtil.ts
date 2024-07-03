@@ -154,8 +154,11 @@ export class Book {
         // 更新页面
         this.updatePage();
 
+        const exhibit = <string>workspace.getConfiguration().get('youjiBok.exhibit');
+		if(exhibit === 'bar'){
+            window.setStatusBarMessage(text.substring(this.start, this.end) + "    " + page_info)
+        }
         // 设置状态栏消息，显示当前页面的文本内容以及页面信息
-        window.setStatusBarMessage(text.substring(this.start, this.end) + "    " + page_info)
     }
 
     async getJumpingPage() {
