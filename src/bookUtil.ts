@@ -68,6 +68,12 @@ export class Book {
             workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
         }, delayTime*3);
     }
+    updatePage1() {
+        curr_page_numberNew = this.curr_page_number;
+        clearTimeout(ttOutAuto);
+        curr_page_numberNew = 0;
+        workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
+    }
 
     getStartEnd() {
         this.start = this.curr_page_number * this.page_size!;
@@ -185,6 +191,7 @@ export class Book {
     
         this.curr_page_number = Number(txt);
         this.setTxtShow();
+        this.updatePage1();
     }
 
     async searchJump() {
@@ -204,7 +211,7 @@ export class Book {
 
         let items: CustomQuickPickItem[] = indices.map((index) => ({
             label: `页数: ${Math.ceil(index  / size)}，位置: ${index}`,
-            description: `内容：${text.substring(index, index + size)}`,
+            description: `内容：${text.substring(index-5, index + size)}`,
             index: index
         }));
 
@@ -213,6 +220,8 @@ export class Book {
         if (selected) {
             this.curr_page_number = Math.ceil(selected.index  / size);
             this.setTxtShow();
+            this.updatePage1();
+            
         }
     }
 

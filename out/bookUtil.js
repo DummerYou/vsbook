@@ -69,6 +69,12 @@ class Book {
             vscode_1.workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
         }, delayTime * 3);
     }
+    updatePage1() {
+        curr_page_numberNew = this.curr_page_number;
+        clearTimeout(ttOutAuto);
+        curr_page_numberNew = 0;
+        vscode_1.workspace.getConfiguration().update('youjiBok.currPageNumber', this.curr_page_number, true);
+    }
     getStartEnd() {
         this.start = this.curr_page_number * this.page_size;
         this.end = this.curr_page_number * this.page_size - this.page_size;
@@ -160,6 +166,7 @@ class Book {
             }
             this.curr_page_number = Number(txt);
             this.setTxtShow();
+            this.updatePage1();
         });
     }
     searchJump() {
@@ -178,13 +185,14 @@ class Book {
             let size = this.page_size || 20;
             let items = indices.map((index) => ({
                 label: `页数: ${Math.ceil(index / size)}，位置: ${index}`,
-                description: `内容：${text.substring(index, index + size)}`,
+                description: `内容：${text.substring(index - 5, index + size)}`,
                 index: index
             }));
             let selected = yield vscode_1.window.showQuickPick(items, { placeHolder: '选择一个位置进行跳转' });
             if (selected) {
                 this.curr_page_number = Math.ceil(selected.index / size);
                 this.setTxtShow();
+                this.updatePage1();
             }
         });
     }
